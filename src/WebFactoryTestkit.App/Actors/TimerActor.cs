@@ -1,17 +1,17 @@
 using Akka.Hosting;
 
-namespace WebFactoryTestkit.App;
+namespace WebFactoryTestkit.App.Actors;
 
 public class TimerActor : ReceiveActor, IWithTimers
 {
     private readonly IActorRef _helloActor;
 
-    public TimerActor(IRequiredActor<HelloActor> helloActor)
+    public TimerActor(IRequiredActor<EchoActor> helloActor)
     {
         _helloActor = helloActor.ActorRef;
         Receive<string>(message =>
         {
-            _helloActor.Tell(message);
+            _helloActor.Tell(new Hello(message));
         });
     }
 

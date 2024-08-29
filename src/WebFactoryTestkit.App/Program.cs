@@ -1,29 +1,13 @@
 ﻿using Akka.Hosting;
-using WebFactoryTestkit.App;
-using Microsoft.Extensions.Hosting;
+using WebFactoryTestkit.App.Configuration;
 
-var hostBuilder = new HostBuilder();
+var builder = WebApplication.CreateBuilder(args);
 
-hostBuilder.ConfigureServices((context, services) =>
+builder.Services.AddAkka("MyActorSystem", (akkaBuilder, sp) =>
 {
-    services.AddAkka("MyActorSystem", (builder, sp) =>
-    {
-        builder
-            .WithActors((system, registry, resolver) =>
-            {
-                var helloActor = system.ActorOf(Props.Create(() => new HelloActor()), "hello-actor");
-                registry.Register<HelloActor>(helloActor);
-            })
-            .WithActors((system, registry, resolver) =>
-            {
-                var timerActorProps =
-                    resolver.Props<TimerActor>(); // uses Msft.Ext.DI to inject reference to helloActor
-                var timerActor = system.ActorOf(timerActorProps, "timer-actor");
-                registry.Register<TimerActor>(timerActor);
-            });
-    });
+    akkaBuilder.AddAppActors();
 });
 
-var host = hostBuilder.Build();
-
-await host.RunAsync();
+var app = builder.Build();
+app.MapControllers();
+await app.RunAsync();

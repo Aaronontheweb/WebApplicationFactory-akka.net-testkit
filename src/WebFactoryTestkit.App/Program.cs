@@ -17,13 +17,13 @@ builder.Services.Configure<AkkaSettings>(builder.Configuration.GetSection(nameof
 builder.Services.AddAkka("MyActorSystem", (akkaBuilder, sp) =>
 {
     akkaBuilder.AddAppActors();
-    akkaBuilder.ConfigurePersistence(sp.GetRequiredService<IOptionsSnapshot<AkkaSettings>>().Value);
+    akkaBuilder.ConfigurePersistence(sp.CreateScope().ServiceProvider.GetRequiredService<IOptionsSnapshot<AkkaSettings>>().Value);
 });
 
 var app = builder.Build();
 
 app.MapGet("/echo",
-    (IRequiredActor<EchoActor> actor) =>
+    (IRequiredActor<ReplyActor> actor) =>
         actor.ActorRef.Ask<HelloAck>(new Hello("Hello, Akka.NET!"), TimeSpan.FromSeconds(3)));
 
 await app.RunAsync();

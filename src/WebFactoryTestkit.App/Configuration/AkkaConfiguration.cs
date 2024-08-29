@@ -19,8 +19,8 @@ public static class AkkaConfiguration
     {
         builder.WithActors((system, registry, resolver) =>
             {
-                var helloActor = system.ActorOf(Props.Create(() => new EchoActor()), "hello-actor");
-                registry.Register<EchoActor>(helloActor);
+                var helloActor = system.ActorOf(Props.Create(() => new ReplyActor()), "hello-actor");
+                registry.Register<ReplyActor>(helloActor);
             })
             .WithActors((system, registry, resolver) =>
             {

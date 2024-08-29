@@ -13,4 +13,8 @@
     <PackageReference Include="Akka.Persistence.Sql.Hosting" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="WebFactoryTestKit.Tests"/>
+  </ItemGroup>
+
 </Project>

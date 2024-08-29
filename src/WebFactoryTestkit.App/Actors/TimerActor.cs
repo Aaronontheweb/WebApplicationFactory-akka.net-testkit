@@ -6,7 +6,7 @@ public class TimerActor : ReceiveActor, IWithTimers
 {
     private readonly IActorRef _helloActor;
 
-    public TimerActor(IRequiredActor<EchoActor> helloActor)
+    public TimerActor(IRequiredActor<ReplyActor> helloActor)
     {
         _helloActor = helloActor.ActorRef;
         Receive<string>(message =>

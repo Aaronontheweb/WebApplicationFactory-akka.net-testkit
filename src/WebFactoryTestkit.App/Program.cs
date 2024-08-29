@@ -1,29 +1,36 @@
-﻿using Akka.Hosting;
-using WebFactoryTestkit.App;
-using Microsoft.Extensions.Hosting;
+﻿// -----------------------------------------------------------------------
+//  <copyright file="Program.cs" company="Petabridge, LLC Project">
+//      Copyright (C) 2015-2024 Petabridge, LLC <https://petabridge.com/>
+// </copyright>
+// -----------------------------------------------------------------------
 
-var hostBuilder = new HostBuilder();
+using Akka.Hosting;
+using Microsoft.Extensions.Options;
+using WebFactoryTestkit.App.Actors;
+using WebFactoryTestkit.App.Configuration;
 
-hostBuilder.ConfigureServices((context, services) =>
+// get ASP.NET Environment
+var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddJsonFile("appsettings.json")
+    .AddJsonFile($"appsettings.{env}.json", true)
+    .AddEnvironmentVariables();
+
+builder.Services.Configure<AkkaSettings>(builder.Configuration.GetSection(nameof(AkkaSettings)));
+
+builder.Services.AddAkka("MyActorSystem", (akkaBuilder, sp) =>
 {
-    services.AddAkka("MyActorSystem", (builder, sp) =>
-    {
-        builder
-            .WithActors((system, registry, resolver) =>
-            {
-                var helloActor = system.ActorOf(Props.Create(() => new HelloActor()), "hello-actor");
-                registry.Register<HelloActor>(helloActor);
-            })
-            .WithActors((system, registry, resolver) =>
-            {
-                var timerActorProps =
-                    resolver.Props<TimerActor>(); // uses Msft.Ext.DI to inject reference to helloActor
-                var timerActor = system.ActorOf(timerActorProps, "timer-actor");
-                registry.Register<TimerActor>(timerActor);
-            });
-    });
+    akkaBuilder.AddAppActors();
+    akkaBuilder.ConfigurePersistence(sp.CreateScope().ServiceProvider
+        .GetRequiredService<IOptionsSnapshot<AkkaSettings>>().Value);
 });
 
-var host = hostBuilder.Build();
+var app = builder.Build();
 
-await host.RunAsync();
+app.MapGet("/echo",
+    (IRequiredActor<ReplyActor> actor) =>
+        actor.ActorRef.Ask<HelloAck>(new Hello("Hello, Akka.NET!"), TimeSpan.FromSeconds(3)));
+
+await app.RunAsync();

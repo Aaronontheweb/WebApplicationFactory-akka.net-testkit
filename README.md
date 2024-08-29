@@ -10,11 +10,16 @@ We still use [Akka.Hosting](https://github.com/akkadotnet/Akka.Hosting) to confi
 It ended up being simpler just to use the regular `TestKit` and pass in the `ActorSystem` into its CTOR via the following:
 
 ```csharp
-public class ReplyActorIntegrationSpecs : TestKit, IClassFixture<CustomWebApplicationFactory<Program>>
+public class ReplyActorIntegrationSpecs : TestKit
 {
-    private CustomWebApplicationFactory<Program> _factory;
-
-    public ReplyActorIntegrationSpecs(CustomWebApplicationFactory<Program> factory, ITestOutputHelper output)
+    private readonly CustomWebApplicationFactory<Program> _factory;
+    
+    public ReplyActorIntegrationSpecs(ITestOutputHelper output)
+        : this(new CustomWebApplicationFactory<Program>(), output)
+    {
+    }
+    
+    private ReplyActorIntegrationSpecs(CustomWebApplicationFactory<Program> factory, ITestOutputHelper output)
         : base(factory.Services.GetRequiredService<ActorSystem>(), output)
     {
         _factory = factory;
@@ -22,7 +27,25 @@ public class ReplyActorIntegrationSpecs : TestKit, IClassFixture<CustomWebApplic
 
     // test methods
 
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            try
+            {
+                _factory.Dispose();
+                base.Dispose(disposing);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+        }
+        
+    }
 }
 ```
 
-This uses xUnit's `IClassFixture` to re-use the same `ActorSystem` across all test instances - but you could redesign it to work as a collection fixture or an individual test fixture. We leave that as an exercise to the reader.
+We use a public CTOR to satisfy the xUnit test runner, but the private CTOR is used to instantiate our `CustomWebApplicationFactory<Program>` and resolve the `ActorSystem` started by Akka.Hosting, which gets passed into our test context via the `base` class constructor call. This will create an instance of this `ActorSystem` + `CustomWebApplicationFactory<Program>` per each test, which is the cleanest way to do it.
+
+We also override the Akka.TestKit's `Dispose(bool disposing)` method to explicitly terminate the `CustomWebApplicationFactory<Program>`.

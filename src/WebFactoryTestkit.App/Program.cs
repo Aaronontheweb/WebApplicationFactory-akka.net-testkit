@@ -1,4 +1,10 @@
-﻿using Akka.Hosting;
+﻿// -----------------------------------------------------------------------
+//  <copyright file="Program.cs" company="Petabridge, LLC Project">
+//      Copyright (C) 2015-2024 Petabridge, LLC <https://petabridge.com/>
+// </copyright>
+// -----------------------------------------------------------------------
+
+using Akka.Hosting;
 using Microsoft.Extensions.Options;
 using WebFactoryTestkit.App.Actors;
 using WebFactoryTestkit.App.Configuration;
@@ -9,7 +15,7 @@ var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Devel
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.json")
-    .AddJsonFile($"appsettings.{env}.json", optional: true)
+    .AddJsonFile($"appsettings.{env}.json", true)
     .AddEnvironmentVariables();
 
 builder.Services.Configure<AkkaSettings>(builder.Configuration.GetSection(nameof(AkkaSettings)));
@@ -17,7 +23,8 @@ builder.Services.Configure<AkkaSettings>(builder.Configuration.GetSection(nameof
 builder.Services.AddAkka("MyActorSystem", (akkaBuilder, sp) =>
 {
     akkaBuilder.AddAppActors();
-    akkaBuilder.ConfigurePersistence(sp.CreateScope().ServiceProvider.GetRequiredService<IOptionsSnapshot<AkkaSettings>>().Value);
+    akkaBuilder.ConfigurePersistence(sp.CreateScope().ServiceProvider
+        .GetRequiredService<IOptionsSnapshot<AkkaSettings>>().Value);
 });
 
 var app = builder.Build();

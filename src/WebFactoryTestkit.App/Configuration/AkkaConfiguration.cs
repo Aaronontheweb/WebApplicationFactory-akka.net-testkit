@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-//  <copyright file="AkkaConfiguration.cs" company="Akka.NET Project">
-//      Copyright (C) 2013-2024 .NET Foundation <https://github.com/akkadotnet/akka.net>
+//  <copyright file="AkkaConfiguration.cs" company="Petabridge, LLC Project">
+//      Copyright (C) 2015-2024 Petabridge, LLC <https://petabridge.com/>
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -45,8 +45,8 @@ public static class AkkaConfiguration
             case PersistenceMode.SqlServer:
                 builder
                     .WithSqlPersistence(
-                        connectionString: settings.ConnectionString,
-                        providerName: ProviderName.SqlServer2022,
+                        settings.ConnectionString,
+                        ProviderName.SqlServer2022,
                         tagStorageMode: TagMode.TagTable,
                         deleteCompatibilityMode: true,
                         useWriterUuidColumn: true,
@@ -55,8 +55,8 @@ public static class AkkaConfiguration
             case PersistenceMode.Postgres:
                 builder
                     .WithSqlPersistence(
-                        connectionString: settings.ConnectionString,
-                        providerName: ProviderName.PostgreSQL,
+                        settings.ConnectionString,
+                        ProviderName.PostgreSQL,
                         tagStorageMode: TagMode.TagTable,
                         deleteCompatibilityMode: true,
                         useWriterUuidColumn: true,
@@ -65,8 +65,8 @@ public static class AkkaConfiguration
             case PersistenceMode.Sqlite:
                 builder
                     .WithSqlPersistence(
-                        connectionString: settings.ConnectionString,
-                        providerName: ProviderName.SQLite,
+                        settings.ConnectionString,
+                        ProviderName.SQLite,
                         tagStorageMode: TagMode.TagTable,
                         deleteCompatibilityMode: true,
                         useWriterUuidColumn: true,
@@ -75,6 +75,7 @@ public static class AkkaConfiguration
             default:
                 throw new ArgumentOutOfRangeException();
         }
+
         return builder;
     }
 }

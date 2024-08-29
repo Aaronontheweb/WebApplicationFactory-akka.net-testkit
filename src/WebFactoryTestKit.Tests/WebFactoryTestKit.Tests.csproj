@@ -10,10 +10,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Akka.TestKit.Xunit" />
+        <PackageReference Include="Akka.TestKit.Xunit"/>
         <PackageReference Include="coverlet.collector"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
-        <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
+        <PackageReference Include="Microsoft.AspNetCore.TestHost"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
         <PackageReference Include="xunit"/>
         <PackageReference Include="xunit.runner.visualstudio"/>
@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\WebFactoryTestkit.App\WebFactoryTestkit.App.csproj" />
+        <ProjectReference Include="..\WebFactoryTestkit.App\WebFactoryTestkit.App.csproj"/>
     </ItemGroup>
 
 </Project>

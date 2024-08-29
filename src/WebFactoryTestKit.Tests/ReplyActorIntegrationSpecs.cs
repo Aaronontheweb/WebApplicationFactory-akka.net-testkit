@@ -13,11 +13,16 @@ using Xunit.Abstractions;
 
 namespace WebFactoryTestKit.Tests;
 
-public class ReplyActorIntegrationSpecs : TestKit, IClassFixture<CustomWebApplicationFactory<Program>>
+public class ReplyActorIntegrationSpecs : TestKit
 {
     private readonly CustomWebApplicationFactory<Program> _factory;
-
-    public ReplyActorIntegrationSpecs(CustomWebApplicationFactory<Program> factory, ITestOutputHelper output)
+    
+    public ReplyActorIntegrationSpecs(ITestOutputHelper output)
+        : this(new CustomWebApplicationFactory<Program>(), output)
+    {
+    }
+    
+    private ReplyActorIntegrationSpecs(CustomWebApplicationFactory<Program> factory, ITestOutputHelper output)
         : base(factory.Services.GetRequiredService<ActorSystem>(), output)
     {
         _factory = factory;
@@ -53,5 +58,22 @@ public class ReplyActorIntegrationSpecs : TestKit, IClassFixture<CustomWebApplic
 
         // assert
         await probe.ExpectMsgAsync<HelloAck>();
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            try
+            {
+                _factory.Dispose();
+                base.Dispose(disposing);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+        }
+        
     }
 }

@@ -16,4 +16,9 @@ public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStar
         // disable the default configuration, which uses Postgres
         builder.UseSetting("AkkaSettings:PersistenceMode", "InMemory");
     }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+    }
 }

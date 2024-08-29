@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="Akka.Hosting" />
+    <PackageReference Include="Akka.Persistence.Hosting" />
+    <PackageReference Include="Akka.Persistence.Sql.Hosting" />
   </ItemGroup>
 
 </Project>

@@ -13,6 +13,9 @@ public class TimerActor : ReceiveActor, IWithTimers
         {
             _helloActor.Tell(new Hello(message));
         });
+
+        // ignore
+        Receive<HelloAck>(_ => { });
     }
 
     protected override void PreStart()

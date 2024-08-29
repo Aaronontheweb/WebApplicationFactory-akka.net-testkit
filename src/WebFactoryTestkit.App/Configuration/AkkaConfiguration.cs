@@ -5,6 +5,10 @@
 // -----------------------------------------------------------------------
 
 using Akka.Hosting;
+using Akka.Persistence.Hosting;
+using Akka.Persistence.Sql.Config;
+using Akka.Persistence.Sql.Hosting;
+using LinqToDB;
 using WebFactoryTestkit.App.Actors;
 
 namespace WebFactoryTestkit.App.Configuration;
@@ -31,6 +35,46 @@ public static class AkkaConfiguration
     public static AkkaConfigurationBuilder ConfigurePersistence(this AkkaConfigurationBuilder builder,
         AkkaSettings settings)
     {
+        switch (settings.PersistenceMode)
+        {
+            case PersistenceMode.InMemory:
+                builder
+                    .WithInMemoryJournal()
+                    .WithInMemorySnapshotStore();
+                break;
+            case PersistenceMode.SqlServer:
+                builder
+                    .WithSqlPersistence(
+                        connectionString: settings.ConnectionString,
+                        providerName: ProviderName.SqlServer2022,
+                        tagStorageMode: TagMode.TagTable,
+                        deleteCompatibilityMode: true,
+                        useWriterUuidColumn: true,
+                        autoInitialize: true);
+                break;
+            case PersistenceMode.Postgres:
+                builder
+                    .WithSqlPersistence(
+                        connectionString: settings.ConnectionString,
+                        providerName: ProviderName.PostgreSQL,
+                        tagStorageMode: TagMode.TagTable,
+                        deleteCompatibilityMode: true,
+                        useWriterUuidColumn: true,
+                        autoInitialize: true);
+                break;
+            case PersistenceMode.Sqlite:
+                builder
+                    .WithSqlPersistence(
+                        connectionString: settings.ConnectionString,
+                        providerName: ProviderName.SQLite,
+                        tagStorageMode: TagMode.TagTable,
+                        deleteCompatibilityMode: true,
+                        useWriterUuidColumn: true,
+                        autoInitialize: true);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
         return builder;
     }
 }

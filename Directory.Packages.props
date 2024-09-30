@@ -5,8 +5,8 @@
     <!-- Akka.NET Package Versions -->
     <ItemGroup>
         <PackageVersion Include="Akka.Hosting" Version="1.5.28"/>
-        <PackageVersion Include="Akka.Persistence.Hosting" Version="1.5.27"/>
-        <PackageVersion Include="Akka.Persistence.Sql.Hosting" Version="1.5.27.1"/>
+        <PackageVersion Include="Akka.Persistence.Hosting" Version="1.5.28"/>
+        <PackageVersion Include="Akka.Persistence.Sql.Hosting" Version="1.5.28"/>
         <PackageVersion Include="Akka.TestKit.Xunit" Version="1.5.28"/>
         <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.8"/>
         <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="8.0.8"/>

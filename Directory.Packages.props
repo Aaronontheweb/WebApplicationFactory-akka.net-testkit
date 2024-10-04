@@ -4,7 +4,7 @@
     </PropertyGroup>
     <!-- Akka.NET Package Versions -->
     <ItemGroup>
-        <PackageVersion Include="Akka.Hosting" Version="1.5.28"/>
+        <PackageVersion Include="Akka.Hosting" Version="1.5.30"/>
         <PackageVersion Include="Akka.Persistence.Hosting" Version="1.5.28"/>
         <PackageVersion Include="Akka.Persistence.Sql.Hosting" Version="1.5.28"/>
         <PackageVersion Include="Akka.TestKit.Xunit" Version="1.5.28"/>
